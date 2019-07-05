@@ -4,17 +4,42 @@
     <Parameter Name="API_ASPNETCORE_ENVIRONMENT" DefaultValue="" />
     <Parameter Name="API_InstanceCount" DefaultValue="-1" />
     <Parameter Name="MyStateless_InstanceCount" DefaultValue="-1" />
+
+    <!-- 
+    This is de global definition of the application insights. This will is update based on the deployment parameters
+    See ApplicationParameters\Local.1Node.xml
+    This value is copied to each service in the ConfigOverrides below
+    -->
+    <Parameter Name="ApplicationInsightsID" DefaultValue="00000000-0000-0000-0000-000000000000" />
   </Parameters>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="APIPkg" ServiceManifestVersion="1.0.0" />
-    <ConfigOverrides />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="Diagnostics">
+            <!-- Update the ApplicationInsightsID for the API service -->
+            <Parameter Name="ApplicationInsightsID" Value="[ApplicationInsightsID]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
     <EnvironmentOverrides CodePackageRef="code">
       <EnvironmentVariable Name="ASPNETCORE_ENVIRONMENT" Value="[API_ASPNETCORE_ENVIRONMENT]" />
     </EnvironmentOverrides>
   </ServiceManifestImport>
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="MyStatelessPkg" ServiceManifestVersion="1.0.0" />
-    <ConfigOverrides />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="Diagnostics">
+            <!-- Update the ApplicationInsightsID for the MyStateless service -->
+            <Parameter Name="ApplicationInsightsID" Value="[ApplicationInsightsID]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
   </ServiceManifestImport>
   <DefaultServices>
     <Service Name="API" ServicePackageActivationMode="ExclusiveProcess">
